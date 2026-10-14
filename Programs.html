@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCC Admin | Programs</title>
+  <link rel="icon" type="image/png" href="assets/images/ucc-LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="assets/css/programs.css">
+</head>
+<body data-page-title="Programs">
+<div class="dashboard-layout"><div id="sidebar-container"></div><main class="main-content"><div id="header-container"></div>
+<section class="programs-page">
+  <div class="programs-intro"><p>Manage academic programs, review their mission and vision, and control which programs are visible on the website.</p></div>
+  <div class="programs-college-select"><select id="collegeFilter" class="programs-filter" aria-label="Filter by college">
+	<option value="All">All colleges</option>
+	<option>College of Arts and Sciences</option>
+	<option>College of Business and Accountancy</option>
+	<option>College of Education</option>
+	<option>College of Computer Studies</option>
+	<option>College of Engineering</option>
+</select></div>
+  <div class="programs-toolbar"><div class="programs-tools-left">
+    <label class="programs-search"><i data-lucide="search"></i><input id="programSearch" type="search" placeholder="Search programs..." aria-label="Search programs"></label>
+    <select id="programStatusFilter" class="programs-filter" aria-label="Filter by status">
+		<option value="All">All statuses</option>
+		<option value="Active">Active</option>
+		<option value="Hidden">Hidden</option>
+	</select>
+    <select id="programSort" class="programs-filter" aria-label="Sort programs">
+		<option value="name-asc">Name: A to Z</option>
+		<option value="name-desc">Name: Z to A</option>
+		<option value="newest">Newest added</option>
+		<option value="oldest">Oldest added</option>
+	</select>
+  </div><button class="programs-primary-btn" id="addProgramBtn" type="button"><i data-lucide="plus"></i> Add Program</button></div>
+  <div class="programs-card"><div class="programs-card-head">
+	<h2>Programs</h2>
+	<span class="programs-count" id="programCount">0 programs</span>
+</div>
+    <div class="programs-table-wrap"><table class="programs-table">
+		<thead>
+			<tr>
+				<th>Program Name</th>
+				<th>College</th>
+				<th>Mission &amp; Vision</th>
+				<th>Status</th>
+				<th class="programs-actions-head">Actions</th>
+			</tr>
+		</thead>
+		<tbody id="programsTableBody"></tbody>
+	</table>
+</div>
+    <div class="programs-empty" id="programsEmpty" hidden><i data-lucide="graduation-cap"></i><h3>No programs found</h3><p>Try another search term, college, or status filter.</p></div>
+  </div>
+  <div class="programs-list-controls"><button class="programs-show-more" id="programsShowMore" type="button" hidden>Show more</button><p class="programs-end-message" id="programsEndMessage" hidden>-- No more items --</p></div>
+</section></main></div>
+
+<div class="programs-modal" id="programFormModal" aria-hidden="true" hidden><div class="programs-modal-backdrop" data-close-program-form></div><section class="programs-modal-panel" role="dialog" aria-modal="true" aria-labelledby="programFormTitle">
+  <header class="programs-modal-head"><div><h2 id="programFormTitle">Add Program</h2><p>Add or update the program details and publication status.</p></div><button class="programs-icon-btn" type="button" data-close-program-form aria-label="Close form"><i data-lucide="x"></i></button></header>
+  <form id="programForm"><div class="programs-form-body"><div class="programs-form-grid">
+    <label class="programs-field full">
+		<span>Unit</span>
+		<select id="programCollege" required>
+			<option value="">Select a unit</option>
+			<option>College of Arts and Sciences</option>
+			<option>College of Business and Accountancy</option>
+			<option>College of Education</option>
+			<option>College of Computer Studies</option>
+			<option>College of Engineering</option>
+		</select>
+	</label>
+    <label class="programs-field full">
+		<span>Program Name</span>
+		<input id="programName" name="programName" type="text" maxlength="180" placeholder="Enter program name" required>
+	</label>
+    <label class="programs-field full">
+		<span>Mission</span>
+		<textarea id="programMission" name="mission" rows="4" placeholder="Enter the program's mission" required>
+		</textarea>
+	</label>
+    <label class="programs-field full">
+		<span>Vision</span>
+		<textarea id="programVision" name="vision" rows="4" placeholder="Enter the program's vision" required></textarea>
+	</label>
+    <label class="programs-field full">
+		<span>Status</span>
+		<select id="programStatus" name="status">
+			<option value="Active">Active</option>
+			<option value="Hidden">Hidden</option>
+		</select>
+	</label>
+  </div>
+</div>
+<footer class="programs-form-actions">
+	<button class="programs-secondary-btn" id="cancelProgramBtn" type="button">Cancel</button>
+	<div class="programs-form-actions-right">
+		<button class="programs-secondary-btn" id="previewProgramBtn" type="button">
+			<i data-lucide="eye"></i> Preview</button>
+			<button class="programs-primary-btn" type="submit"><i data-lucide="save">
+
+			</i> Save Program</button></div></footer></form>
+</section></div>
+
+<div class="programs-modal" id="programPreviewModal" aria-hidden="true" hidden>
+	<div class="programs-modal-backdrop" data-close-program-preview></div>
+	<section class="programs-modal-panel programs-preview-panel" role="dialog" aria-modal="true" aria-labelledby="programPreviewTitle">
+  <header class="programs-modal-head">
+	<div><h2 id="programPreviewTitle">Program Preview</h2>
+	</div>
+	<button class="programs-icon-btn" type="button" data-close-program-preview aria-label="Close preview">
+		<i data-lucide="x"></i>
+	</button>
+</header>
+  <div class="programs-preview-content">
+	<div class="programs-preview-top"><span class="programs-preview-label">COLLEGE</span>
+		<h3 id="previewProgramCollege">College Name</h3>
+		<h2 id="previewProgramName">Program Name</h2>
+		<span id="previewProgramStatus" class="programs-status-badge">Active</span>
+	</div><div class="programs-preview-mission">
+		<p class="programs-preview-label">MISSION</p>
+		<p id="previewProgramMission">Program mission will appear here.</p></div>
+		<div class="programs-preview-mission">
+			<p class="programs-preview-label">VISION</p>
+			<p id="previewProgramVision">Program vision will appear here.</p>
+		</div>
+	</div>
+  <footer class="programs-preview-metadata" aria-label="Program record metadata">
+	<div>
+		<span>CREATED BY</span>
+		<strong id="programCreatedBy">Admin</strong>
+	</div><div><span>DATE CREATED</span>
+		<strong id="programDateCreated">—</strong>
+	</div>
+	<div>
+		<span>LAST UPDATED BY</span>
+		<strong id="programLastUpdatedBy">—</strong>
+	</div>
+</footer>
+</section></div>
+<div class="programs-toast" id="programsToast" role="status" aria-live="polite"></div>
+<script src="assets/js/programs.js"></script>
+<script>
+async function loadSharedLayout(){const sidebarContainer=document.getElementById('sidebar-container'),headerContainer=document.getElementById('header-container');try{const [sr,hr]=await Promise.all([fetch('sidebar.html'),fetch('header.html')]);if(!sr.ok||!hr.ok)throw new Error('Unable to load shared header or sidebar.');sidebarContainer.innerHTML=await sr.text();headerContainer.innerHTML=await hr.text();const currentPage=window.location.pathname.split('/').pop().toLowerCase();const title=document.getElementById('pageTitle');if(title)title.textContent=document.body.dataset.pageTitle||'Programs';document.querySelectorAll('.sidebar [data-page]').forEach(link=>{if(link.dataset.page.toLowerCase()===currentPage){link.classList.add('active');const group=link.closest('.menu-group');if(group){group.classList.add('open');const button=group.querySelector('.menu-title');if(button){button.classList.add('active');button.setAttribute('aria-expanded','true');}}}});document.querySelectorAll('.sidebar .menu-title').forEach(button=>button.addEventListener('click',()=>{const group=button.closest('.menu-group');if(!group)return;const open=group.classList.toggle('open');button.setAttribute('aria-expanded',String(open));}));if(window.lucide)window.lucide.createIcons();}catch(error){console.error('Shared layout loading error:',error);sidebarContainer.textContent='Unable to load sidebar. Check that sidebar.html exists.';headerContainer.textContent='Unable to load header. Check that header.html exists.';}}
+loadSharedLayout();
+</script></body></html>

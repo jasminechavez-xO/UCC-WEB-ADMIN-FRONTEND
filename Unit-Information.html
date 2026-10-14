@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCC Admin | Unit Information</title>
+  <link rel="icon" type="image/png" href="assets/images/ucc-LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/unitInformation.css">
+</head>
+<body data-page-title="Unit Information">
+<div class="dashboard-layout"><div id="sidebar-container"></div><main class="main-content"><div id="header-container"></div>
+<section class="units-page">
+  <div class="units-intro"><p>Manage unit mission, vision, descriptions, and publication status.</p></div>
+  <div class="unit-info-unit-select"><select id="unitInfoUnitFilter" class="units-filter" aria-label="Filter by unit">
+	<option value="All">All units</option>
+	<option>College of Arts and Sciences</option>
+	<option>College of Business and Accountancy</option>
+	<option>College of Education</option>
+	<option>College of Computer Studies</option>
+	<option>College of Engineering</option>
+	<option>Office of Student Affairs</option>
+</select>
+</div>
+  <div class="units-toolbar"><div class="units-tools-left"><label class="units-search">
+	<i data-lucide="search"></i>
+	<input id="unitInfoSearch" type="search" placeholder="Search unit information..." aria-label="Search unit information"></label>
+	<select id="unitInfoStatusFilter" class="units-filter" aria-label="Filter by status">
+		<option value="All">All statuses</option>
+		<option value="Active">Active</option><option value="Hidden">Hidden</option>
+	</select><select id="unitInfoSort" class="units-filter" aria-label="Sort records">
+		<option value="name-asc">Unit: A to Z</option>
+		<option value="name-desc">Unit: Z to A</option>
+		<option value="newest">Newest added</option>
+		<option value="oldest">Oldest added</option>
+	</select>
+</div>
+<button class="units-primary-btn" id="addUnitInfoBtn" type="button">
+	<i data-lucide="plus">
+	</i> Add Information</button>
+</div>
+  <div class="units-card">
+	<div class="units-card-head">
+		<h2>Unit Information</h2>
+		<span class="units-count" id="unitInfoCount">0 records</span>
+	</div><div class="units-table-wrap">
+		<table class="units-table">
+			<thead>
+				<tr>
+				<th>Unit</th>
+				<th>Mission</th>
+				<th>Vision</th>
+				<th>Description</th>
+				<th>Status</th>
+				<th class="units-actions-head">Actions</th>
+			</tr>
+		</thead>
+		<tbody id="unitInfoTableBody">
+
+		</tbody>
+	</table>
+</div>
+<div class="units-empty" id="unitInfoEmpty" hidden>
+	<i data-lucide="building-2"></i>
+	<h3>No unit information found</h3>
+	<p>Try another search term, unit, or status filter.</p>
+</div>
+</div>
+  <div class="units-list-controls">
+	<button class="units-show-more" id="unitInfoShowMore" type="button" hidden>Show more</button>
+	<p class="units-end-message" id="unitInfoEndMessage" hidden>-- No more items --</p>
+</div>
+</section>
+</main>
+</div>
+<div class="units-modal" id="unitInfoFormModal" aria-hidden="true" hidden>
+	<div class="units-modal-backdrop" data-close-unit-info-form></div>
+	<section class="units-modal-panel" role="dialog" aria-modal="true" aria-labelledby="unitInfoFormTitle">
+		<header class="units-modal-head">
+			<div>
+		<h2 id="unitInfoFormTitle">Add Unit Information</h2>
+		<p>Add or update a unit's mission, vision, description, and status.</p>
+	</div>
+	<button class="units-icon-btn" type="button" data-close-unit-info-form aria-label="Close form">
+		<i data-lucide="x"></i>
+	</button>
+</header>
+<form id="unitInfoForm">
+	<div class="units-form-body">
+	<div class="units-form-grid">
+<label class="units-field full">
+	<span>Unit</span>
+	<select id="unitInfoUnit" required>
+		<option value="">Select a unit</option>
+		<option>College of Arts and Sciences</option>
+		<option>College of Business and Accountancy</option>
+		<option>College of Education</option><option>College of Computer Studies</option>
+		<option>College of Engineering</option><option>Office of Student Affairs</option>
+	</select>
+</label>
+<label class="units-field full">
+	<span>Mission</span>
+	<textarea id="unitInfoMission" rows="3" placeholder="Enter the unit's mission" required></textarea>
+</label>
+<label class="units-field full">
+	<span>Vision</span>
+	<textarea id="unitInfoVision" rows="3" placeholder="Enter the unit's vision" required></textarea>
+</label>
+<label class="units-field full">
+	<span>Description</span>
+	<textarea id="unitInfoDescription" rows="4" placeholder="Enter a description of the unit" required></textarea>
+</label>
+<label class="units-field full">
+	<span>Status</span>
+	<select id="unitInfoStatus">
+		<option value="Active">Active</option>
+		<option value="Hidden">Hidden</option>
+	</select>
+</label>
+</div>
+</div>
+<footer class="units-form-actions">
+	<button class="units-secondary-btn" id="cancelUnitInfoBtn" type="button">Cancel</button>
+	<div class="units-form-actions-right">
+		<button class="units-secondary-btn" id="previewUnitInfoBtn" type="button"><i data-lucide="eye">
+		</i> Preview</button><button class="units-primary-btn" type="submit">
+			<i data-lucide="save"></i> Save Information</button>
+		</div>
+	</footer>
+</form>
+</section>
+</div>
+<div class="units-modal" id="unitInfoPreviewModal" aria-hidden="true" hidden><div class="units-modal-backdrop" data-close-unit-info-preview></div><section class="units-modal-panel units-preview-panel" role="dialog" aria-modal="true" aria-labelledby="unitInfoPreviewTitle"><header class="units-modal-head"><div><h2 id="unitInfoPreviewTitle">Unit Information Preview</h2></div><button class="units-icon-btn" type="button" data-close-unit-info-preview aria-label="Close preview"><i data-lucide="x"></i></button></header><div class="unit-info-preview-content"><div class="unit-info-preview-top"><p class="units-preview-label">UNIT</p><h2 id="previewUnitInfoUnit">Unit name</h2><span id="previewUnitInfoStatus" class="units-status-badge">Active</span></div><div class="unit-info-preview-section"><p class="units-preview-label">MISSION</p><p id="previewUnitInfoMission"></p></div><div class="unit-info-preview-section"><p class="units-preview-label">VISION</p><p id="previewUnitInfoVision"></p></div><div class="unit-info-preview-section"><p class="units-preview-label">DESCRIPTION</p><p id="previewUnitInfoDescription"></p></div></div><footer class="units-preview-metadata" aria-label="Unit information metadata"><div><span>CREATED BY</span><strong id="unitInfoCreatedBy">Admin</strong></div><div><span>DATE CREATED</span><strong id="unitInfoDateCreated">—</strong></div><div><span>LAST UPDATED BY</span><strong id="unitInfoLastUpdatedBy">—</strong></div></footer></section></div>
+<div class="units-toast" id="unitInfoToast" role="status" aria-live="polite"></div>
+<script src="assets/js/unitInformation.js"></script>
+<script>
+async function loadSharedLayout(){
+	const sidebarContainer=document.getElementById('sidebar-container'),headerContainer=document.getElementById('header-container');
+	try{
+		const [sr,hr]=await Promise.all([fetch('sidebar.html'),fetch('header.html')]);
+		if(!sr.ok||!hr.ok)throw new Error('Unable to load shared header or sidebar.');
+		sidebarContainer.innerHTML=await sr.text();
+		headerContainer.innerHTML=await hr.text();
+		const currentPage=window.location.pathname.split('/').pop().toLowerCase();
+		const title=document.getElementById('pageTitle');
+		if(title)title.textContent=document.body.dataset.pageTitle||'Unit Information';
+		document.querySelectorAll('.sidebar [data-page]').forEach(link=>{if(link.dataset.page.toLowerCase()===currentPage){link.classList.add('active');
+		const group=link.closest('.menu-group');if(group){group.classList.add('open');
+		const button=group.querySelector('.menu-title');
+		if(button){button.classList.add('active');button.setAttribute('aria-expanded','true');}}}});
+		document.querySelectorAll('.sidebar .menu-title').forEach(button=>button.addEventListener('click',()=>{
+			const group=button.closest('.menu-group');if(!group)return;
+			const open=group.classList.toggle('open');
+			button.setAttribute('aria-expanded',String(open));}));if(window.lucide)window.lucide.createIcons();}catch(error){console.error('Shared layout loading error:',error);
+			sidebarContainer.textContent='Unable to load sidebar. Check that sidebar.html exists.';
+			headerContainer.textContent='Unable to load header. Check that header.html exists.';}}
+			loadSharedLayout();
+</script></body></html>

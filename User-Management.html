@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>UCC Admin | User Management</title>
+	<link rel="icon" type="image/png" href="assets/images/ucc-LOGO.png">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+	<script src="https://unpkg.com/lucide@latest"></script>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body data-page-title="User Management">
+	<div class="dashboard-layout">
+		<div id="sidebar-container"></div>
+		<main class="main-content">
+			<div id="header-container"></div>
+			<section class="units-content">
+				<!-- Add your User Management page content here. -->
+			</section>
+		</main>
+	</div>
+	<script>
+		async function loadSharedLayout() {
+			const sidebarContainer = document.getElementById("sidebar-container");
+			const headerContainer = document.getElementById("header-container");
+			try {
+				const [sidebarResponse, headerResponse] = await Promise.all([
+					fetch("sidebar.html"),
+					fetch("header.html")
+				]);
+				if (!sidebarResponse.ok || !headerResponse.ok) {
+					throw new Error("Unable to load the shared header or sidebar.");
+				}
+				sidebarContainer.innerHTML = await sidebarResponse.text();
+				headerContainer.innerHTML = await headerResponse.text();
+				const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+				const pageTitle = document.body.dataset.pageTitle || "Archive";
+				const titleElement = document.getElementById("pageTitle");
+				if (titleElement) {
+					titleElement.textContent = pageTitle;
+				}
+				document.querySelectorAll(".sidebar [data-page]").forEach(link => {
+					if (link.dataset.page.toLowerCase() === currentPage) {
+						link.classList.add("active");
+						const menuGroup = link.closest(".menu-group");
+						if (menuGroup) {
+							menuGroup.classList.add("open");
+							const menuButton = menuGroup.querySelector(".menu-title");
+							if (menuButton) {
+								menuButton.classList.add("active");
+								menuButton.setAttribute("aria-expanded", "true");
+							}
+						}
+					}
+				});
+				document.querySelectorAll(".menu-title").forEach(button => {
+					button.addEventListener("click", () => {
+						const menuGroup = button.parentElement;
+						const isOpen = menuGroup.classList.toggle("open");
+						button.setAttribute("aria-expanded", String(isOpen));
+					});
+				});
+				if (window.lucide) {
+					lucide.createIcons();
+				}
+			} catch (error) {
+				console.error("Shared layout loading error:", error);
+				sidebarContainer.textContent = "Unable to load sidebar. Check that sidebar.html exists.";
+				headerContainer.textContent = "Unable to load header. Check that header.html exists.";
+			}
+		}
+		loadSharedLayout();
+	</script>
+	<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+</body>
+</html>

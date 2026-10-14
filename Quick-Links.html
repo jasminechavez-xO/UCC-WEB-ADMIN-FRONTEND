@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>UCC Admin | Quick Links</title>
+
+    <link rel="icon" type="image/png" href="assets/images/ucc-LOGO.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/css/quickLinks.css">
+</head>
+
+<body data-page-title="Quick Links">
+
+<div class="dashboard-layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+        <div id="header-container"></div>
+
+        <section class="quick-links-page">
+            <p class="quick-page-description">
+                Manage the quick links shown to users.
+            </p>
+
+            <div class="quick-links-toolbar">
+                <label class="quick-search" for="quickSearch">
+                    <i data-lucide="search" aria-hidden="true"></i>
+                    <input
+                        type="search"
+                        id="quickSearch"
+                        placeholder="Search quick links..."
+                        aria-label="Search quick links"
+                    >
+                </label>
+
+                <button class="quick-btn quick-btn-primary" type="button" id="addLinkBtn">
+                    <i data-lucide="plus"></i>
+                    Add Link
+                </button>
+            </div>
+
+            <section class="quick-links-card" aria-labelledby="quickLinksHeading">
+                <div class="quick-links-card-header">
+                    <h2 id="quickLinksHeading">Quick Links</h2>
+
+                    <div class="quick-links-count">
+                      
+                        <span><strong id="totalLinks">0</strong> links</span>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="quick-links-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Order</th>
+                                <th scope="col">Link Name</th>
+                                <th scope="col">URL</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="quickLinksBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            
+<div class="quick-table-controls">
+    <p class="quick-empty" id="quickEmpty" hidden>
+        No quick links match your search.
+    </p>
+
+    <p class="quick-end-message" id="quickEndMessage" hidden>
+        — No more items —
+    </p>
+
+    <button class="quick-btn quick-btn-success quick-more-btn"
+            type="button" id="showMoreBtn" hidden>
+        Show More
+    </button>
+
+    <button class="quick-btn quick-btn-success quick-more-btn"
+            type="button" id="showLessBtn" hidden>
+        Show Less
+    </button>
+</div>
+
+        </section>
+    </main>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="quick-modal" id="quickModal" aria-hidden="true">
+    <div class="quick-modal-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="modalTitle">
+
+        <div class="quick-modal-header">
+            <div>
+                <h2 id="modalTitle">Add Quick Link</h2>
+                <p class="quick-modal-subtitle">
+                    Enter the details for this quick link.
+                </p>
+            </div>
+
+            <button class="quick-modal-close"
+                    type="button"
+                    id="closeModalBtn"
+                    aria-label="Close modal">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <form class="quick-form" id="quickLinkForm" novalidate>
+            <input type="hidden" id="editingIndex">
+
+            <div class="form-field featured-image-field">
+                <label for="featuredImage">Featured Image</label>
+
+                <div class="quick-image-upload">
+                    <div class="quick-image-preview-slot">
+                        <div class="quick-image-empty">
+                            <i data-lucide="image-plus"></i>
+                            <span>No image selected</span>
+                        </div>
+
+                        <img id="selectedImagePreview"
+                             alt="Selected featured image"
+                             hidden>
+                    </div>
+
+                    <div class="quick-image-actions">
+                        <button class="quick-btn quick-btn-outline"
+                                type="button"
+                                id="chooseImageBtn">
+                            <i data-lucide="upload"></i>
+                            Choose Photo
+                        </button>
+
+                        <button class="quick-btn quick-btn-remove"
+                                type="button"
+                                id="removeImageBtn"
+                                hidden>
+                            <i data-lucide="trash-2"></i>
+                            Remove Photo
+                        </button>
+                    </div>
+                </div>
+
+                <input type="file"
+                       id="featuredImage"
+                       class="visually-hidden-file"
+                       accept="image/*">
+
+                <div class="field-error" id="featuredImageError"></div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="linkName">Link Name</label>
+                    <input type="text"
+                           id="linkName"
+                           maxlength="100"
+                           placeholder="Enter link name"
+                           required>
+                    <div class="field-error" id="linkNameError"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="linkUrl">URL</label>
+                    <input type="url"
+                           id="linkUrl"
+                           placeholder="https://example.com"
+                           required>
+                    <div class="field-error" id="linkUrlError"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="displayOrder">Display Order</label>
+                    <input type="number"
+                           id="displayOrder"
+                           min="1"
+                           step="1"
+                           placeholder="1"
+                           required>
+                    <div class="field-error" id="displayOrderError"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="linkStatus">Status</label>
+                    <select id="linkStatus" class="quick-status-select">
+                        <option value="Active">Active</option>
+                        <option value="Hidden">Hidden</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="quick-metadata" id="quickMetadata" hidden>
+                <h3>Metadata</h3>
+                <p><span>Created by</span><strong id="metadataCreatedBy">Admin</strong></p>
+                <p><span>Date created</span><strong id="metadataCreatedDate">—</strong></p>
+                <p><span>Last updated by</span><strong id="metadataUpdatedBy">—</strong></p>
+            </div>
+        </form>
+
+        <div class="quick-modal-footer">
+            <button class="quick-btn quick-btn-outline"
+                    type="button"
+                    id="cancelModalBtn">
+                Cancel
+            </button>
+
+            <div class="quick-modal-footer-actions">
+                <button class="quick-btn quick-btn-outline"
+                        type="button"
+                        id="previewLinkBtn">
+                    <i data-lucide="eye"></i>
+                    Preview
+                </button>
+
+                <button class="quick-btn quick-btn-primary"
+                        type="submit"
+                        form="quickLinkForm">
+                    <i data-lucide="save"></i>
+                    Save Link
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PREVIEW MODAL -->
+<div class="quick-preview-modal" id="quickPreviewModal" aria-hidden="true">
+    <div class="quick-preview-card"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="quickPreviewTitle">
+
+        <div class="quick-modal-header">
+            <div>
+                <h2 id="quickPreviewTitle">Quick Link Preview</h2>
+                <p class="quick-modal-subtitle">Preview the selected quick link.</p>
+            </div>
+
+            <button class="quick-modal-close"
+                    type="button"
+                    id="closePreviewBtn"
+                    aria-label="Close preview">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <div class="quick-preview-content">
+            <img id="previewImage" alt="Featured image" hidden>
+
+            <span class="quick-preview-status" id="previewStatus">Active</span>
+
+            <h3 id="previewName">Link name</h3>
+            <p id="previewUrl"></p>
+
+            <a id="previewVisitLink"
+               href="#"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="quick-btn quick-btn-success">
+                <i data-lucide="external-link"></i>
+                View Link
+            </a>
+        </div>
+
+        <footer class="quick-preview-metadata">
+            <div>
+                <span>CREATED BY</span>
+                <strong id="previewCreatedBy">—</strong>
+            </div>
+            <div>
+                <span>DATE CREATED</span>
+                <strong id="previewCreatedDate">—</strong>
+            </div>
+            <div>
+                <span>LAST UPDATED BY</span>
+                <strong id="previewUpdatedBy">—</strong>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="quick-toast" id="quickToast" role="status" aria-live="polite">
+    <i data-lucide="check-circle-2"></i>
+    <span id="toastMessage"></span>
+</div>
+
+<script>
+async function loadSharedLayout() {
+    const sidebar = document.getElementById("sidebar-container");
+    const header = document.getElementById("header-container");
+
+    try {
+        const [sidebarResponse, headerResponse] = await Promise.all([
+            fetch("sidebar.html"),
+            fetch("header.html")
+        ]);
+
+        if (!sidebarResponse.ok || !headerResponse.ok) {
+            throw new Error("Unable to load shared layout.");
+        }
+
+        sidebar.innerHTML = await sidebarResponse.text();
+        header.innerHTML = await headerResponse.text();
+
+        const title = document.getElementById("pageTitle");
+        if (title) title.textContent = "Quick Links";
+
+        const currentPage = location.pathname.split("/").pop().toLowerCase();
+
+        document.querySelectorAll(".sidebar [data-page]").forEach(item => {
+            item.classList.toggle(
+                "active",
+                (item.dataset.page || "").toLowerCase() === currentPage
+            );
+        });
+
+        if (window.lucide) window.lucide.createIcons();
+    } catch (error) {
+        console.error("Shared layout loading error:", error);
+    }
+}
+
+loadSharedLayout();
+</script>
+
+<script src="assets/js/quickLinks.js"></script>
+</body>
+</html>

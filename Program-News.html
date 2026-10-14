@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCC Admin | Program News</title>
+  <link rel="icon" type="image/png" href="assets/images/ucc-LOGO.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/programNews.css">
+</head>
+<body data-page-title="Program News">
+  <div class="dashboard-layout">
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+      <div id="header-container"></div>
+      <section class="program-news-page">
+        <div class="pn-intro"><p>Manage program-specific news, update announcements, preview content, and control what is published.</p></div>
+        <div class="pn-program-row">
+     
+          <select id="programFilter" class="pn-select">
+            <option value="All">All programs</option>
+            <option value="BSIT">Bachelor of Science in Information Technology</option>
+            <option value="BSCS">Bachelor of Science in Computer Science</option>
+            <option value="BSA">Bachelor of Science in Accountancy</option>
+            <option value="BSED">Bachelor of Secondary Education</option>
+            <option value="BSHM">Bachelor of Science in Hospitality Management</option>
+          </select>
+        </div>
+        <div class="pn-toolbar">
+          <div class="pn-toolbar-left">
+            <label class="pn-search"><i data-lucide="search"></i><input id="pnSearch" type="search" placeholder="Search program news..." aria-label="Search program news"></label>
+            <select id="pnStatusFilter" class="pn-select" aria-label="Filter by status">
+              <option value="All">All statuses</option><option value="Draft">Draft</option><option value="Published">Published</option><option value="Archived">Archived</option>
+            </select>
+            <select id="pnSort" class="pn-select" aria-label="Sort program news">
+              <option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option>
+            </select>
+          </div>
+          <button class="pn-btn pn-btn-primary" id="addProgramNews" type="button"><i data-lucide="plus"></i> Add Program News</button>
+        </div>
+        <div class="pn-card">
+          <div class="pn-card-head"><h2>Program News</h2><span id="pnCount">0 items</span></div>
+          <div class="pn-table-wrap"><table class="pn-table">
+            <thead><tr><th>Featured Image</th><th>Title / Excerpt</th><th>Program</th><th>Publish Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="pnTableBody"></tbody>
+          </table></div>
+        </div>
+        <div class="pn-list-controls">
+          <button class="pn-show-more" id="pnShowMore" type="button">Show more</button>
+          <div class="pn-end-message" id="pnEndMessage" hidden>-- No more items --</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="pn-modal" id="pnFormModal" aria-hidden="true">
+    <div class="pn-backdrop" data-close-form></div>
+    <section class="pn-modal-panel" role="dialog" aria-modal="true" aria-labelledby="pnFormHeading">
+      <header class="pn-modal-head"><div><h2 id="pnFormHeading">Add Program News</h2><p>Create or update news for a specific academic program.</p></div><button class="pn-close-form" type="button" data-close-form aria-label="Close form"><i data-lucide="x"></i></button></header>
+      <form id="pnForm">
+        <div class="pn-form-body">
+          <div class="pn-image-upload">
+            <div class="pn-image-placeholder" id="pnImagePlaceholder"><i data-lucide="image-plus"></i><strong>Featured Image</strong></div>
+            <img id="pnImagePreview" alt="Selected featured image" hidden>
+            <input id="pnImageFile" type="file" accept="image/*" hidden>
+            <div class="pn-image-actions"><button type="button" class="pn-btn pn-btn-light" id="pnChooseImage"><i data-lucide="upload"></i> Choose Photo</button><button type="button" class="pn-btn pn-btn-remove" id="pnRemoveImage" hidden><i data-lucide="x"></i> Remove Photo</button></div>
+          </div>
+          <div class="pn-field"><label for="pnTitle">Title </label><input id="pnTitle" required maxlength="160" placeholder="Enter program news title"></div>
+          <div class="pn-field"><label for="pnExcerpt">Excerpt </label><textarea id="pnExcerpt" required rows="4" maxlength="400" placeholder="Write a short summary of this news"></textarea></div>
+          <div class="pn-form-grid">
+            <div class="pn-field pn-program-field"><label for="pnProgram">Program </label><select id="pnProgram" required class="pn-select"><option value="">Select a program</option><option value="BSIT">BSIT</option><option value="BSCS">BSCS</option><option value="BSA">BSA</option><option value="BSED">BSED</option><option value="BSHM">BSHM</option></select></div>
+            <div class="pn-field"><label for="pnDate">Publish Date </label><input id="pnDate" type="date" required></div>
+            <div class="pn-field"><label for="pnStatus">Status</label><select id="pnStatus" class="pn-select"><option value="Draft">Draft</option><option value="Published">Published</option></select></div>
+          </div>
+        </div>
+        <footer class="pn-form-footer"><button type="button" class="pn-btn pn-btn-cancel" data-close-form>Cancel</button><div class="pn-footer-right"><button type="button" class="pn-btn pn-btn-preview" id="pnPreviewFromForm"><i data-lucide="eye"></i> Preview</button><button type="submit" class="pn-btn pn-btn-primary"><i data-lucide="save"></i> Save Program News</button></div></footer>
+      </form>
+    </section>
+  </div>
+
+  <div class="pn-modal pn-preview-modal" id="pnPreviewModal" aria-hidden="true">
+    <div class="pn-backdrop" data-close-preview></div>
+    <section class="pn-modal-panel pn-preview-panel" role="dialog" aria-modal="true" aria-labelledby="pnPreviewHeading">
+      <header class="pn-modal-head"><div><h2 id="pnPreviewHeading">Program News Preview</h2><p>Preview how this item will appear.</p></div><button class="pn-close-preview" type="button" data-close-preview aria-label="Close preview"><i data-lucide="x"></i></button></header>
+      <article class="pn-preview-content"><img id="pnPreviewImage" alt="News featured image" hidden><div class="pn-preview-no-image" id="pnPreviewNoImage"><i data-lucide="image"></i></div><div class="pn-preview-copy"><span class="pn-preview-program" id="pnPreviewProgram"></span><h3 id="pnPreviewTitle">Untitled program news</h3><p class="pn-preview-date" id="pnPreviewDate"></p><p id="pnPreviewExcerpt"></p><span class="pn-status" id="pnPreviewStatus">Draft</span></div></article>
+      <footer class="pn-metadata-footer"><div class="pn-metadata-grid"><div><span>Created by</span><strong id="pnCreatedBy">Admin</strong></div><div><span>Date created</span><strong id="pnDateCreated">—</strong></div><div><span>Last updated by</span><strong id="pnUpdatedBy">Admin</strong></div></div></footer>
+    </section>
+  </div>
+  <div class="pn-toast" id="pnToast" role="status" aria-live="polite"></div>
+
+  <script>
+    async function loadSharedLayout() {
+      const sidebarContainer = document.getElementById("sidebar-container");
+      const headerContainer = document.getElementById("header-container");
+      try {
+        const [sidebarResponse, headerResponse] = await Promise.all([fetch("sidebar.html"), fetch("header.html")]);
+        if (!sidebarResponse.ok || !headerResponse.ok) throw new Error("Unable to load the shared header or sidebar.");
+        sidebarContainer.innerHTML = await sidebarResponse.text();
+        headerContainer.innerHTML = await headerResponse.text();
+        const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+        const titleElement = document.getElementById("pageTitle");
+        if (titleElement) titleElement.textContent = document.body.dataset.pageTitle || "Program News";
+        document.querySelectorAll(".sidebar [data-page]").forEach(link => {
+          if (link.dataset.page.toLowerCase() === currentPage) {
+            link.classList.add("active");
+            const group = link.closest(".menu-group");
+            if (group) { group.classList.add("open"); const button = group.querySelector(".menu-title"); if (button) { button.classList.add("active"); button.setAttribute("aria-expanded", "true"); } }
+          }
+        });
+        document.querySelectorAll(".menu-title").forEach(button => button.addEventListener("click", () => {
+          const group = button.parentElement; const open = group.classList.toggle("open"); button.setAttribute("aria-expanded", String(open));
+        }));
+      } catch (error) { console.error("Shared layout loading error:", error); sidebarContainer.textContent = "Unable to load sidebar. Check that sidebar.html exists."; headerContainer.textContent = "Unable to load header. Check that header.html exists."; }
+      if (window.lucide) lucide.createIcons();
+    }
+    loadSharedLayout();
+  </script>
+  <script src="assets/js/programNews.js"></script>
+</body>
+</html>

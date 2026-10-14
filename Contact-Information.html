@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UCC Admin | Contact Information</title>
+  <link rel="icon" type="image/png" href="images/ucc-LOGO.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:wght@700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="assets/css/contactInformation.css">
+</head>
+<body data-page-title="Contact Information">
+  <div class="dashboard-layout">
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+      <div id="header-container"></div>
+
+      <section class="contact-information-page" aria-labelledby="contactsHeading">
+        <div class="contact-page-intro">
+          <p>Manage the contact details displayed across the university website.</p>
+        </div>
+
+        <div class="contact-search-toolbar">
+          <label class="contact-search">
+            <i data-lucide="search"></i>
+            <input id="contactSearch" type="search" placeholder="Search contacts..." aria-label="Search contacts">
+          </label>
+
+          <select class="contact-filter" id="categoryFilter" aria-label="Filter by category">
+            <option value="">All categories</option>
+            <option value="Campus">Campus</option>
+            <option value="Colleges">Colleges</option>
+            <option value="Offices">Offices</option>
+          </select>
+
+          <select class="contact-filter" id="statusFilter" aria-label="Filter by status">
+            <option value="">All statuses</option>
+            <option value="Active">Active</option>
+            <option value="Hidden">Hidden</option>
+          </select>
+
+          <button class="contact-primary-btn" id="openContactForm" type="button">
+            <i data-lucide="plus"></i>
+            Add Contact
+          </button>
+        </div>
+
+        <section class="contact-card">
+          <div class="contact-card-toolbar">
+            <h3 id="contactsHeading">Contacts</h3>
+            <span class="contact-count" id="contactCountLabel" aria-live="polite">5 Contacts</span>
+          </div>
+
+          <!-- The table card ends here. Footer is deliberately outside the card. -->
+          <div class="contact-table-card">
+            <div class="contact-table-wrap">
+              <table class="contact-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="contactTableBody"></tbody>
+              </table>
+
+              <div class="contact-empty-state" id="contactEmptyState" hidden>
+                No contacts found.
+              </div>
+            </div>
+          </div>
+
+          <!-- Separate footer with a visible gap from the table card -->
+          <div class="contact-list-footer">
+            <button type="button" class="contact-show-more" id="showMoreContacts"
+              aria-expanded="false" hidden>Show more</button>
+            <p id="contactEndMessage" hidden>-- No more items --</p>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Add / Edit Contact Modal -->
+  <div class="contact-modal-overlay" id="contactFormModal" aria-hidden="true">
+    <section class="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contactFormTitle">
+      <header class="contact-modal-header">
+        <h2 id="contactFormTitle">Add Contact</h2>
+        <button class="contact-close-btn" type="button" data-close-form aria-label="Close form">
+          <i data-lucide="x"></i>
+        </button>
+      </header>
+
+      <form id="contactForm">
+        <input type="hidden" id="contactId">
+
+        <div class="contact-form-grid">
+          <div class="contact-form-field">
+            <label for="contactCategory">Category</label>
+            <select id="contactCategory" name="contactCategory" required>
+              <option value="Campus">Campus</option>
+              <option value="Colleges">Colleges</option>
+              <option value="Offices">Offices</option>
+            </select>
+          </div>
+
+          <div class="contact-form-field">
+            <label for="contactStatus">Status</label>
+            <select id="contactStatus" name="contactStatus">
+              <option value="Active">Active</option>
+              <option value="Hidden">Hidden</option>
+            </select>
+          </div>
+
+          <div class="contact-form-field contact-full-field">
+            <label for="contactName">Name</label>
+            <input id="contactName" name="contactName" type="text" placeholder="Enter name" required>
+          </div>
+
+          <div class="contact-form-field">
+            <label for="contactEmail">Email</label>
+            <input id="contactEmail" name="contactEmail" type="email" placeholder="Enter email address" required>
+          </div>
+
+          <div class="contact-form-field">
+            <label for="contactNumber">Contact Number</label>
+            <input id="contactNumber" name="contactNumber" type="tel" placeholder="Enter contact number" required>
+          </div>
+
+          <div class="contact-form-field contact-full-field" id="campusLocationField">
+            <label for="contactLocation">Integrated Map / Campus Location</label>
+            <input id="contactLocation" name="contactLocation" type="text"
+              placeholder="Enter campus address or paste a Google Maps URL">
+            <small class="contact-location-help">The campus location will appear in the contact preview.</small>
+            <div class="contact-map-frame" id="contactMapFrame">
+              <div class="contact-map-placeholder">
+                <i data-lucide="map-pin"></i>
+                <span>Enter a campus address or Google Maps link to preview the location.</span>
+              </div>
+            </div>
+            <p class="contact-location-caption" id="contactLocationCaption" hidden></p>
+          </div>
+        </div>
+
+        <footer class="contact-form-actions">
+          <button class="contact-cancel-btn" type="button" data-close-form>Cancel</button>
+          <div class="contact-form-actions-right">
+            <button class="contact-secondary-btn" type="button" id="previewContactBtn">
+              <i data-lucide="eye"></i> Preview
+            </button>
+            <button class="contact-primary-btn" type="submit">
+              <i data-lucide="save"></i><span id="saveContactLabel">Save Contact</span>
+            </button>
+          </div>
+        </footer>
+      </form>
+    </section>
+  </div>
+
+  <!-- Contact Preview Modal -->
+  <div class="contact-modal-overlay contact-preview-overlay" id="contactPreviewModal" aria-hidden="true">
+    <section class="contact-preview-modal" role="dialog" aria-modal="true" aria-labelledby="contactPreviewTitle">
+      <header class="contact-modal-header">
+        <div>
+          <p class="contact-eyebrow">CONTACT DETAILS</p>
+          <h2 id="contactPreviewTitle">Contact Preview</h2>
+        </div>
+        <button class="contact-close-btn" type="button" data-close-preview aria-label="Close preview">
+          <i data-lucide="x"></i>
+        </button>
+      </header>
+
+      <div class="contact-preview-card">
+        <div class="contact-preview-icon"><i data-lucide="contact-round"></i></div>
+        <div class="contact-preview-main">
+          <div class="contact-preview-heading">
+            <h3 id="previewContactName">Contact name</h3>
+            <span class="contact-status" id="previewContactStatus">Active</span>
+          </div>
+          <span class="contact-category" id="previewContactCategory">Campus</span>
+          <p><i data-lucide="mail"></i><span id="previewContactEmail">Email</span></p>
+          <p><i data-lucide="phone"></i><span id="previewContactNumber">Number</span></p>
+        </div>
+      </div>
+
+      <section class="contact-preview-location" id="previewLocationSection" hidden>
+        <h3>Campus Location</h3>
+        <p id="previewContactLocation"></p>
+        <div class="contact-preview-map" id="previewMapFrame"></div>
+        <a id="previewContactMapLink" href="#" target="_blank" rel="noopener noreferrer">
+          <i data-lucide="map-pin"></i> Open in Google Maps
+        </a>
+      </section>
+
+      <footer class="contact-metadata" aria-label="Contact metadata">
+        <div class="contact-metadata-grid">
+          <div><span>CREATED BY</span><p id="previewCreatedBy">Administrator</p></div>
+          <div><span>DATE CREATED</span><p id="previewCreatedAt">—</p></div>
+          <div><span>LAST UPDATED BY</span><p id="previewUpdatedBy">Not updated</p></div>
+        </div>
+      </footer>
+    </section>
+  </div>
+
+  <!-- Shared layout loader.  -->
+  <script>
+    async function loadSharedLayout() {
+      const sidebar = document.getElementById("sidebar-container");
+      const header = document.getElementById("header-container");
+
+      try {
+        const [sidebarResponse, headerResponse] = await Promise.all([
+          fetch("sidebar.html"),
+          fetch("header.html")
+        ]);
+
+        if (!sidebarResponse.ok || !headerResponse.ok) {
+          throw new Error("Unable to load shared layout files.");
+        }
+
+        sidebar.innerHTML = await sidebarResponse.text();
+        header.innerHTML = await headerResponse.text();
+
+        const pageTitle = document.getElementById("pageTitle");
+        if (pageTitle) {
+          pageTitle.textContent = document.body.dataset.pageTitle || "Contact Information";
+        }
+
+        const currentPage = location.pathname.split("/").pop().toLowerCase();
+
+        document.querySelectorAll(".sidebar [data-page]").forEach(link => {
+          link.classList.toggle("active", link.dataset.page.toLowerCase() === currentPage);
+        });
+
+        document.querySelectorAll(".sidebar .menu-title").forEach(button => {
+          const group = button.closest(".menu-group");
+          const submenu = group?.querySelector(".submenu");
+
+          if (submenu?.querySelector(".active")) {
+            group.classList.add("open");
+            button.classList.add("active");
+            button.setAttribute("aria-expanded", "true");
+          }
+
+          button.addEventListener("click", () => {
+            group.classList.toggle("open");
+            button.setAttribute("aria-expanded", group.classList.contains("open") ? "true" : "false");
+          });
+        });
+
+        if (window.lucide) window.lucide.createIcons();
+      } catch (error) {
+        console.error(error);
+        if (sidebar) sidebar.innerHTML = "<p>Unable to load sidebar. Check sidebar.html.</p>";
+        if (header) header.innerHTML = "<p>Unable to load header. Check header.html.</p>";
+      }
+    }
+
+    loadSharedLayout();
+  </script>
+  <script src="assets/js/contactInformation.js"></script>
+</body>
+</html>
